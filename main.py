@@ -5,13 +5,9 @@ from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
-from environs import Env
 from telegram import Bot
 
-env_path = Path('.', '.env')
-load_dotenv(dotenv_path=env_path,override=True)
-env = Env()
-env.read_env()
+load_dotenv()
 
 url = 'https://dvmn.org/api/long_polling/'
 headers = {'Authorization': os.getenv('TOKEN_DEVMAN')}

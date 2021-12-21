@@ -30,7 +30,7 @@ USER_ID=612578269
 
  TOKEN_DEVMAN - you will get it via [Devman API](https://dvmn.org/api/docs/)  
 TOKEN_TELEGRAM - to get it please writte to Telegram @BotFather bot, first you shall ```/start``` command, than ```/newbot```, than follow the instruction in Telegram.  
-*USER_ID - to get it please writte to Telegram @userinfobot. Send ```/start``` command to the bot.  
+USER_ID - to get it please writte to Telegram @userinfobot. Send ```/start``` command to the bot.  
 
 ## Project Goals
 
