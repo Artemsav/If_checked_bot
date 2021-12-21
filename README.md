@@ -7,7 +7,7 @@ This is bot for cheking if the works are already reviewed. To run the bot you sh
 python main.py
 ```
 When you will get review results from your curator you will have the message with it in your telegram bot.
-![Example](https://ibb.co/DbL8Cvh)
+![Example](./images/devman.png)
 
 ## Instalation
 
