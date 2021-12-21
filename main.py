@@ -1,58 +1,53 @@
-import os
 import json
 import logging
-from pathlib import Path
+import os
+import time
 
 import requests
 from dotenv import load_dotenv
 from telegram import Bot
 
-load_dotenv()
 
-url = 'https://dvmn.org/api/long_polling/'
-headers = {'Authorization': os.getenv('TOKEN_DEVMAN')}
-payload = {'timestamp_to_request': ''}
-token=os.getenv('TOKEN_TELEGRAM')
-user_id=os.getenv('USER_ID')
-bot = Bot(token=token)
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
+def main():
+    load_dotenv()
+    url = 'https://dvmn.org/api/long_polling/'
+    headers = {'Authorization': os.getenv('TOKEN_DEVMAN')}
+    payload = {'timestamp_to_request': time.time()}
+    token = os.getenv('TOKEN_TELEGRAM')
+    user_id = os.getenv('USER_ID')
+    bot = Bot(token=token)
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                        level=logging.INFO)
+    while True:
+        try:
+            bot.send_message(chat_id=user_id, text=handle_status(get_status(url, headers, payload)))
+            payload = {'timestamp_to_request': get_status(url, headers, payload).get('timestamp_to_request')}
+            time.sleep(60)
+        except Exception as exc:
+            bot.send_message(chat_id=user_id, text=f'Бот упал с ошибкой: {exc}')
+            time.sleep(60)
 
-def parse_status(url, headers, payload):
+
+def get_status(url, headers, payload):
     r = requests.get(url, headers=headers, params=payload)
-    review_status = r.json()
-    timestamp_to_request = review_status.get('timestamp_to_request')
-    payload = {'timestamp_to_request':timestamp_to_request}
-    return review_status
+    api_respond = r.json()
+    return api_respond
+
 
 def handle_status(status):
-    for item in status.get('new_attempts'):
-        title =  item.get('lesson_title')
-        link_on_task = item.get('lesson_url')
-        if item.get('is_negative')==True:
-            status_of_work = f'У вас проверили работу "{title}" \n К сожалению, в работе нашлись ошибки. Ссылка на задачу {link_on_task}'
-        elif item.get('is_negative')==False:
-            status_of_work = f'У вас проверили работу "{title}" \n Преподавателю все понравилось, можно приступать к следующему уроку!'
+    works_status = []
+    for attempt in status.get('new_attempts'):
+        title = attempt.get('lesson_title')
+        task_link = attempt.get('lesson_url')
+        if attempt.get('is_negative'):
+            work_status = f'У вас проверили работу "{title}" \n К сожалению, в работе нашлись ошибки. Ссылка на задачу {task_link}'
+        elif not attempt.get('is_negative'):
+            work_status = f'У вас проверили работу "{title}" \n Преподавателю все понравилось, можно приступать к следующему уроку!'
         else:
-            status_of_work = 'Status is incorrect, please try again'
-        return status_of_work
-
-def start (update, context):
-    #this will retrieve the user's username, as you already know
-    chat_user_client = update.message.from_user.username
-    #this will send the information to some Telegram user
-    chat_user_client = update.message.from_user.username
-    context.bot.send_message(chat_id=update.effective_chat.id,
-                             text = f'Hello {chat_user_client}!')
+            work_status = 'Status is incorrect, please try again'
+        works_status.append(work_status)
+    return '\n'.join([_ for _ in works_status])
 
 
 if __name__ == '__main__':
-    while True:
-        try:
-            parse_status(url, headers, payload)
-            bot.send_message(chat_id = user_id, text = handle_status(parse_status(url, headers, payload)))
-
-        except ConnectionError:
-            pass
-        except requests.exceptions.pleReadTimeout:
-            pass
+    main()
