@@ -5,6 +5,7 @@ import time
 
 import requests
 from dotenv import load_dotenv
+from requests.models import ReadTimeoutError
 from telegram import Bot
 
 
@@ -12,7 +13,7 @@ def main():
     load_dotenv()
     url = 'https://dvmn.org/api/long_polling/'
     headers = {'Authorization': os.getenv('TOKEN_DEVMAN')}
-    payload = {'timestamp_to_request': time.time()}
+    payload = {'timestamp': time.time()}
     token = os.getenv('TOKEN_TELEGRAM')
     user_id = os.getenv('USER_ID')
     bot = Bot(token=token)
@@ -20,16 +21,18 @@ def main():
                         level=logging.INFO)
     while True:
         try:
-            bot.send_message(chat_id=user_id, text=handle_status(get_status(url, headers, payload)))
-            payload = {'timestamp_to_request': get_status(url, headers, payload).get('timestamp_to_request')}
-            time.sleep(60)
-        except Exception as exc:
+            status = get_status(url, headers, payload)
+            bot.send_message(chat_id=user_id, text=handle_status(status))
+            payload = {'timestamp': status.get('timestamp_to_request')}
+        except ConnectionError as exc:
             bot.send_message(chat_id=user_id, text=f'Бот упал с ошибкой: {exc}')
             time.sleep(60)
+        except requests.exceptions.ReadTimeout:
+            pass
 
 
 def get_status(url, headers, payload):
-    r = requests.get(url, headers=headers, params=payload)
+    r = requests.get(url, headers=headers, params=payload, timeout=60)
     api_respond = r.json()
     return api_respond
 
