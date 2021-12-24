@@ -22,8 +22,11 @@ def main():
     while True:
         try:
             status = get_status(url, headers, payload)
-            bot.send_message(chat_id=user_id, text=handle_status(status))
-            payload = {'timestamp': status.get('timestamp_to_request')}
+            if status.get('new_attempts')=='found':
+                bot.send_message(chat_id=user_id, text=handle_status(status))
+                payload = {'timestamp': status.get('last_attempt_timestamp')}
+            else:
+                payload = {'timestamp': status.get('timestamp_to_request')}
         except ConnectionError as exc:
             bot.send_message(chat_id=user_id, text=f'Бот упал с ошибкой: {exc}')
             time.sleep(60)
