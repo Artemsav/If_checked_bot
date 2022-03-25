@@ -18,8 +18,7 @@ def main():
     user_id = os.getenv('USER_ID')
     bot = Bot(token=token)
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                        level=logging.INFO,
-                        filename='bot.log')
+                        level=logging.INFO)
     while True:
         logging.info('Бот запущен')
         try:
