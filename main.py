@@ -18,8 +18,10 @@ def main():
     user_id = os.getenv('USER_ID')
     bot = Bot(token=token)
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                        level=logging.INFO)
+                        level=logging.INFO,
+                        filename='bot.log')
     while True:
+        logging.info('Бот запущен')
         try:
             status = get_status(url, headers, payload)
             if status.get('status')=='found':
