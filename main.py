@@ -15,12 +15,26 @@ def main():
     headers = {'Authorization': os.getenv('TOKEN_DEVMAN')}
     payload = {'timestamp': time.time()}
     token = os.getenv('TOKEN_TELEGRAM')
+    logging_token = os.getenv('TOKEN_LOGGING')
     user_id = os.getenv('USER_ID')
     bot = Bot(token=token)
+    logging_bot = Bot(token=logging_token)
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                         level=logging.INFO)
+
+    
+    class MyLogsHandler(logging.Handler):
+
+        def emit(self, record):
+            log_entry = self.format(record)
+            logging_bot.send_message(chat_id=user_id, text=log_entry)
+
+
+    logger = logging.getLogger('Bot logging')
+    logger.addHandler(MyLogsHandler)
     while True:
         logging.info('Бот запущен')
+        logging_bot.send_message(chat_id=user_id, text='I am here')
         try:
             status = get_status(url, headers, payload)
             if status.get('status')=='found':
@@ -29,7 +43,7 @@ def main():
             else:
                 payload = {'timestamp': status.get('timestamp_to_request')}
         except ConnectionError as exc:
-            bot.send_message(chat_id=user_id, text=f'Бот упал с ошибкой: {exc}')
+            logging_bot.send_message(chat_id=user_id, text=f'Бот упал с ошибкой: {exc}')
             time.sleep(60)
         except requests.exceptions.ReadTimeout:
             pass
