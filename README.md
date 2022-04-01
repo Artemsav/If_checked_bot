@@ -12,6 +12,7 @@ When you will get review results from your curator you will have the message wit
 ![Example](./images/devman.png)
 
 Example of logging error:
+
 ![Example](./images/devman2.png)
 
 ## Instalation
