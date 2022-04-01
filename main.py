@@ -19,22 +19,27 @@ def main():
     user_id = os.getenv('USER_ID')
     bot = Bot(token=token)
     logging_bot = Bot(token=logging_token)
-    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                        level=logging.INFO)
 
-    
-    class MyLogsHandler(logging.Handler):
+
+    class TelegramLogsHandler(logging.Handler):
+
+        def __init__(self, tg_bot, chat_id):
+            super().__init__()
+            self.chat_id = chat_id
+            self.tg_bot = tg_bot
 
         def emit(self, record):
             log_entry = self.format(record)
-            logging_bot.send_message(chat_id=user_id, text=log_entry)
+            self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
 
 
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logger = logging.getLogger('Bot logging')
-    logger.addHandler(MyLogsHandler)
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(TelegramLogsHandler(tg_bot=logging_bot, chat_id=user_id))
+    logger.info('Бот запущен')
     while True:
-        logging.info('Бот запущен')
-        logging_bot.send_message(chat_id=user_id, text='I am here')
+
         try:
             status = get_status(url, headers, payload)
             if status.get('status')=='found':
@@ -43,7 +48,7 @@ def main():
             else:
                 payload = {'timestamp': status.get('timestamp_to_request')}
         except ConnectionError as exc:
-            logging_bot.send_message(chat_id=user_id, text=f'Бот упал с ошибкой: {exc}')
+            logger.error(exc)
             time.sleep(60)
         except requests.exceptions.ReadTimeout:
             pass
