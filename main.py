@@ -39,7 +39,6 @@ def main():
     logger.addHandler(TelegramLogsHandler(tg_bot=logging_bot, chat_id=user_id))
     logger.info('Бот запущен')
     while True:
-
         try:
             status = get_status(url, headers, payload)
             if status.get('status')=='found':
