@@ -12,6 +12,7 @@ When you will get review results from your curator you will have the message wit
 ![Example](./images/devman.png)
 
 Example of logging error:
+
 ![Example](./images/devman2.png)
 
 ## Instalation
@@ -35,6 +36,7 @@ TOKEN_LOGGING=5479412501:FFA1DSGOh_Lm3eLbyo6isRjMrRssdsdsdSAW
 TOKEN_DEVMAN - you will get it via [Devman API](https://dvmn.org/api/docs/)  
 TOKEN_TELEGRAM - to get it please writte to Telegram @BotFather bot, first you shall ```/start``` command, than ```/newbot```, than follow the instruction in Telegram.  
 USER_ID - to get it please writte to Telegram @userinfobot. Send ```/start``` command to the bot.
+
 TOKEN_LOGGING - to get it once again please writte to Telegram @BotFather bot, first you shall ```/start``` command, than ```/newbot```, than follow the instruction in Telegram. This is token for separate bot supposed to logging error from main one.S
 
 ## Project Goals
