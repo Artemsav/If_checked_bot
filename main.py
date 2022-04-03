@@ -58,7 +58,7 @@ def main():
             time.sleep(60)
 
 
-def handle_status(message):
+def handle_messages(message):
     works_status = []
     for attempt in message.get('new_attempts'):
         title = attempt.get('lesson_title')
