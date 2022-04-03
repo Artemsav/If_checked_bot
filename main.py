@@ -41,17 +41,21 @@ def main():
     while True:
         try:
             r = requests.get(url, headers=headers, params=payload, timeout=60)
-            api_respond = r.json()
-            if api_respond.get('status') == 'found':
-                bot.send_message(chat_id=user_id, text=handle_status(api_respond))
-                payload = {'timestamp': api_respond.get('last_attempt_timestamp')}
+            r.raise_for_status()
+            result_of_checking = r.json()
+            if result_of_checking.get('status') == 'found':
+                bot.send_message(chat_id=user_id, text=handle_status(result_of_checking))
+                payload = {'timestamp': result_of_checking.get('last_attempt_timestamp')}
             else:
-                payload = {'timestamp': api_respond.get('timestamp_to_request')}
+                payload = {'timestamp': result_of_checking.get('timestamp_to_request')}
         except ConnectionError as exc:
             logger.error(exc)
             time.sleep(60)
         except requests.exceptions.ReadTimeout:
             pass
+        except requests.exceptions.HTTPError as exc:
+            logger.error(exc)
+            time.sleep(60)
 
 
 def handle_status(message):
