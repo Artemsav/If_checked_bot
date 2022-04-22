@@ -44,7 +44,7 @@ def main():
             r.raise_for_status()
             result_of_checking = r.json()
             if result_of_checking.get('status') == 'found':
-                bot.send_message(chat_id=user_id, text=handle_status(result_of_checking))
+                bot.send_message(chat_id=user_id, text=handle_messages(result_of_checking))
                 payload = {'timestamp': result_of_checking.get('last_attempt_timestamp')}
             else:
                 payload = {'timestamp': result_of_checking.get('timestamp_to_request')}
