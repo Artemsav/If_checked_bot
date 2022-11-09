@@ -39,6 +39,22 @@ USER_ID - to get it please writte to Telegram @userinfobot. Send ```/start``` co
 
 TOKEN_LOGGING - to get it once again please writte to Telegram @BotFather bot, first you shall ```/start``` command, than ```/newbot```, than follow the instruction in Telegram. This is token for separate bot supposed to logging error from main one.S
 
+## Docker instalation
+
+Для запуска контейнера скопируйте его на локальную машину командой
+
+```bash
+docker push artemsav/if_checked_bot:tagname
+```
+
+Запустите контейнер
+
+```bash
+docker run --env-file .env -p 8008:3306 if_checked_bot
+```
+
+Для корректной работе нужно в корне проекта создать файл `.env` и поместить туда все необходимые для работы бота переменные окружения.
+
 ## Project Goals
 
 The code is written for educational purposes on online-course for web-developers [Devman](https://dvmn.org)
