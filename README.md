@@ -44,7 +44,7 @@ TOKEN_LOGGING - to get it once again please writte to Telegram @BotFather bot, f
 Для запуска контейнера скопируйте его на локальную машину командой
 
 ```bash
-docker push artemsav/if_checked_bot:tagname
+docker push artemsav/if_checked_bot:latest
 ```
 
 Запустите контейнер
