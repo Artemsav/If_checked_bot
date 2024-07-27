@@ -41,19 +41,19 @@ TOKEN_LOGGING - to get it once again please writte to Telegram @BotFather bot, f
 
 ## Docker instalation
 
-Для запуска контейнера скопируйте его на локальную машину командой
+To run the container, copy it to the local machine with the command
 
 ```bash
 docker push artemsav/if_checked_bot:latest
 ```
 
-Запустите контейнер
+Run conainer
 
 ```bash
 docker run --env-file .env -p 8008:3306 if_checked_bot
 ```
 
-Для корректной работе нужно в корне проекта создать файл `.env` и поместить туда все необходимые для работы бота переменные окружения.
+To work correctly, you need to create a `.env` file in the root of the project and put all the environment variables necessary for the bot to work there.
 
 ## Project Goals
 
